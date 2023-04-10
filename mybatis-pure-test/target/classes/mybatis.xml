@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--dtd文件约束是有顺序的，标签顺序不能错-->
+<configuration>
+    <properties resource="db.properties"/><!--可以直接引入配置文件-->
+
+    <!--settings：控制mybatis全局行为-->
+    <settings>
+        <!--设置mybatis输出日志-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+
+    <!--定义别名-->
+<!--    <typeAliases>-->
+<!--        &lt;!&ndash;-->
+<!--            第一种方式：-->
+<!--            可以指定一个类型一个自定义别名-->
+<!--            type:自定义类型的全限定名称-->
+<!--            alias:别名（短小，容易记忆的）-->
+<!--        &ndash;&gt;-->
+<!--        <typeAlias type="com.bjp.domain.Student" alias="stu" />-->
+<!--        &lt;!&ndash;-->
+<!--        StudentDao.xml里面-->
+<!--        resultType="com.bjp.domain.Student"-->
+<!--        可以替换成resultType="stu"-->
+<!--        &ndash;&gt;-->
+<!--        <typeAlias type="com.bjp.vo.ViewStudent" alias="vstu" />-->
+
+<!--        &lt;!&ndash;-->
+<!--          第二种方式-->
+<!--          <package> name是包名， 这个包中的所有类，类名就是别名（类名不区分大小写）-->
+<!--        &ndash;&gt;-->
+<!--        &lt;!&ndash;<package name="com.bjp.domain"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;<package name="com.bjp.vo"/>&ndash;&gt;-->
+<!--    </typeAliases>-->
+
+    <!--配置插件-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor" />
+    </plugins>
+
+    <!--环境配置： 数据库的连接信息
+        default:必须和某个environment的id值一样。
+        告诉mybatis使用哪个数据库的连接信息。也就是访问哪个数据库
+    -->
+    <environments default="development">
+        <!-- environment : 一个数据库信息的配置， 环境
+             id:一个唯一值，自定义，表示环境的名称。
+        -->
+        <environment id="development">
+            <transactionManager type="JDBC"/><!--事务管理器 -->
+            <dataSource type="POOLED"><!--数据源 -->
+                <property name="driver" value="${driver}"/><!--我们通过properties属性实现引用配置文件 -->
+                <property name="url" value="${url}"/><!--jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8-->
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+
+        <environment id="myTest">
+            <!--
+              transactionManager:mybatis提交事务，回顾事务的方式
+                 type: 事务的处理的类型
+                     1）JDBC : 表示mybatis底层是调用JDBC中的Connection对象的，commit， rollback
+                     2）MANAGED : 把mybatis的事务处理委托给其它的容器（一个服务器软件，一个框架（spring））
+            -->
+            <transactionManager type="JDBC"/>
+            <!--
+               dataSource:表示数据源，java体系中，规定实现了javax.sql.DataSource接口的都是数据源。
+                          数据源表示Connection对象的。
+
+               type:指定数据源的类型
+                  1）POOLED: 使用连接池， mybatis会创建PooledDataSource类
+                  2）UPOOLED: 不使用连接池， 在每次执行sql语句，先创建连接，执行sql，在关闭连接
+                              mybatis会创建一个UnPooledDataSource，管理Connection对象的使用
+                  3）JNDI：java命名和目录服务（windows注册表）
+            -->
+            <dataSource type="POOLED">
+                <!--
+                   driver, user, username, password 是固定的，不能自定义。
+                -->
+                <!--数据库的驱动类名-->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <!--连接数据库的url字符串-->
+                <property name="url"
+                          value="jdbc:mysql://localhost:3306/springdb?useSSL=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+                <!--访问数据库的用户名-->
+                <property name="username" value="root"/>
+                <!--密码-->
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- sql mapper(sql映射文件)的位置-->
+    <mappers>
+        <!--一个mapper标签指定一个文件的位置。
+           从类路径开始的路径信息。  target/clasess(类路径)
+        -->
+        <!--第一种方式：指定多个mapper文件-->
+        <!--<mapper resource="com/bjp/dao/StudentDao.xml"/>
+        <mapper resource="com/bjp/dao/AccountDao.xml" />-->
+
+        <!--第二种方式： 使用包名
+            name: xml文件（mapper文件）所在的包名, 这个包中所有xml文件一次都能加载给mybatis
+            使用package的要求：
+             1. mapper文件名称需要和接口名称一样， 区分大小写的一样
+             2. mapper文件和dao接口需要在同一目录
+        -->
+        <package name="com.bjp.dao"/>
+        <!-- <package name="com.bjp.dao2"/>
+         <package name="com.bjp.dao3"/>-->
+    </mappers>
+</configuration>

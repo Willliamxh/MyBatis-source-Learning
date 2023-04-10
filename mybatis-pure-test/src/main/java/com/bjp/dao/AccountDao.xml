@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bjp.dao.AccountDao"><!--这边是接口的全限定名称-->
+
+    <!--&lt;!&ndash;定义sql片段&ndash;&gt;-->
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.bjp.domain.Account">
+        select * from xuhan_learning.account where id=#{studentId}
+    </select>
+
+
+    <!--<sql id="studentSql">-->
+    <!--    select id,name, age, email from springdb.student-->
+    <!--</sql>-->
+
+    <!--<sql id="studentSqlOne">-->
+    <!--    id,name, age, email-->
+    <!--</sql>-->
+    <!-- if
+         <if:test="使用参数java对象的属性值作为判断条件，语法 属性=XXX值">
+    -->
+<!--    <select id="selectStudentIf" resultType="com.bjp.domain.Student">-->
+<!--        select id,name, age, email from springdb.student-->
+<!--        where id>0-->
+<!--        <if test="name !=null and name !='' ">-->
+<!--             and name = #{name}-->
+<!--        </if>-->
+<!--        <if test="age > 0">-->
+<!--            and age > #{age}-->
+<!--        </if>-->
+<!--    </select>-->
+
+    <!--
+     where: <where> <if> <if>...</where>
+    -->
+<!--    <select id="selectStudentWhere" resultType="com.bjp.domain.Student">-->
+<!--        select id,name, age, email from springdb.student-->
+<!--        <where>-->
+<!--            <if test="name !=null and name !='' ">-->
+<!--                name = #{name}-->
+<!--            </if>-->
+<!--            <if test="age > 0">-->
+<!--                or age > #{age}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+
+
+    <!--foreach使用1 ， List<Integer>-->
+<!--    <select id="selectForeachOne" resultType="com.bjp.domain.Student">-->
+<!--        select * from springdb.student where id in-->
+<!--        <foreach collection="list" item="myid" open="(" close=")" separator=",">-->
+<!--            #{myid}-->
+<!--        </foreach>-->
+
+<!--    </select>-->
+
+<!--    <select id="selectForeachTwo" resultType="com.bjp.domain.Student">-->
+<!--        select * from springdb.student where id in-->
+<!--        <foreach collection="list" item="stu" open="("  close=")" separator=",">-->
+<!--                 #{stu.id}-->
+<!--        </foreach>-->
+
+<!--    </select>-->
+
+    <!--<select id="selectForeachTwo" resultType="com.bjp.domain.Student">-->
+    <!--    <include refid="studentSql" />  where id in (-->
+    <!--    <foreach collection="list" item="stu" >-->
+    <!--        #{stu.id},-->
+    <!--    </foreach>-->
+    <!--    -1 )-->
+    <!--</select>-->
+
+
+</mapper>
