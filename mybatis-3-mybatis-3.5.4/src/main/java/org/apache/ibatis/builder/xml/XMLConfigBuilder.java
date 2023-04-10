@@ -84,7 +84,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     //调用父类的BaseBuilder的构造方法，初始化Configuration核心对象。 new Configuration()注册了类型别名+一些配置项的默认值。
     super(new Configuration());
    // 设置当前线程的错误上下文信息，便于发生错误时记录错误信息
-   ErrorContext.instance().resource("SQL Mapper Configuration");
+    ErrorContext.instance().resource("SQL Mapper Configuration");
 
 
     this.configuration.setVariables(props);// props = null

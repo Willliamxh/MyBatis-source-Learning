@@ -21,6 +21,9 @@ package org.apache.ibatis.executor;
 public class ErrorContext {
 
   private static final String LINE_SEPARATOR = System.lineSeparator();
+  /**
+   * 线程变量副本
+   */
   private static final ThreadLocal<ErrorContext> LOCAL = new ThreadLocal<>();
 
   private ErrorContext stored;
@@ -34,6 +37,12 @@ public class ErrorContext {
   private ErrorContext() {
   }
 
+  /**
+   * 每个线程拿到自己的ErrorContext单例对象
+   *
+   * 不是全局唯一的单例模式，而是每个线程唯一的单例模式
+   * @return
+   */
   public static ErrorContext instance() {
     ErrorContext context = LOCAL.get();
     if (context == null) {

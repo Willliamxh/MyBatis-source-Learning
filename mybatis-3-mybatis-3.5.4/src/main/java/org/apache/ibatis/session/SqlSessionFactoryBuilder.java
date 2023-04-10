@@ -75,7 +75,8 @@ public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
-      // 创建一个XMLConfigBuilder的xml配置构建器对象
+      // 创建一个XMLConfigBuilder的xml配置构建器对象 做解析的准备工作 核心三个对象：configuration（注册别名和默认配置）
+      // document（就是我们的xml转化成了对象） xpath（用于解析xml）
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       //parser.parse() 解析得到一个Configuration配置对象
       return build(parser.parse());

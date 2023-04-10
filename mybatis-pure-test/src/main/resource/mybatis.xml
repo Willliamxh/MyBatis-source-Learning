@@ -52,6 +52,7 @@
         -->
         <environment id="development">
             <transactionManager type="JDBC"/><!--事务管理器 -->
+<!--       别名替换     <transactionManager type="org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory"/>-->
             <dataSource type="POOLED"><!--数据源 -->
                 <property name="driver" value="${driver}"/><!--我们通过properties属性实现引用配置文件 -->
                 <property name="url" value="${url}"/><!--jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8-->
