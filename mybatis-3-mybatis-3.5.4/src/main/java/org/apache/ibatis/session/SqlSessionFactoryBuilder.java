@@ -94,7 +94,7 @@ public class SqlSessionFactoryBuilder {
   }
 
   public SqlSessionFactory build(Configuration config) {
-    //通过Configuration来构造工厂
+    //通过Configuration来构造工厂 其实就是把xml配置最后转换到了这个Configuration 类中
     return new DefaultSqlSessionFactory(config);
   }
 
