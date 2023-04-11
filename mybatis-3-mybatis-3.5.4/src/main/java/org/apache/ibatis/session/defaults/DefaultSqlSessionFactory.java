@@ -15,21 +15,17 @@
  */
 package org.apache.ibatis.session.defaults;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.apache.ibatis.exceptions.ExceptionFactory;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author Clinton Begin
@@ -44,6 +40,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
   @Override
   public SqlSession openSession() {
+    //调用当前类的另一个方法打开一个sqlSession会话，        得到一个默认的执行器类型（simple：就是每个语句创建一个jdbc的statement reuse：相同的语句复用 batch批量）      事务隔离级别      是否自动提交事务
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
   }
 
@@ -88,17 +85,25 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   }
 
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
+    //事务接口：包装一个数据库连接，处理该链接的生命周期：包括 ： 链接的创建、预处理、提交/回滚、关闭
     Transaction tx = null;
     try {
+      //从configuration获取环境Environment相关信息，其实就是<environment>里的东西
       final Environment environment = configuration.getEnvironment();
+      //根据environment信息获取事务工厂 也就是JdbcTransactionFactory
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      //根据环境信息中的数据源，事务隔离级别，是否自动提交 这三个参数，创建一个事务对象
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      //创建一个执行器 Executor 对象  增删改查 其实就是用这个类来实现的
       final Executor executor = configuration.newExecutor(tx, execType);
+      //创建一个默认的sqlSession对象，初始化成员变量
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
+      //关闭事务对象
       closeTransaction(tx); // may have fetched a connection so lets call close()
       throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
     } finally {
+      //重置错误上下文
       ErrorContext.instance().reset();
     }
   }
@@ -126,9 +131,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   }
 
   private TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
+    //如果环境信息中没有配置，则创建一个Managed类型的事务工厂
     if (environment == null || environment.getTransactionFactory() == null) {
       return new ManagedTransactionFactory();
     }
+    //获取环境中配置的事务工厂
     return environment.getTransactionFactory();
   }
 

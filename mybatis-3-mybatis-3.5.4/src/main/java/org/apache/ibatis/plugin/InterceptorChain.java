@@ -28,6 +28,7 @@ public class InterceptorChain {
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
+      //用插件的拦截器处理一下，然后再返回。Interceptor有三个方法，插件会去实现这三个方法。比如PageInterceptor
       target = interceptor.plugin(target);
     }
     return target;

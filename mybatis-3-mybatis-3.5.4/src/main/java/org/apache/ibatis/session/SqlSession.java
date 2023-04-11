@@ -15,19 +15,22 @@
  */
 package org.apache.ibatis.session;
 
+import org.apache.ibatis.cursor.Cursor;
+import org.apache.ibatis.executor.BatchResult;
+
 import java.io.Closeable;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.cursor.Cursor;
-import org.apache.ibatis.executor.BatchResult;
 
 /**
  * The primary Java interface for working with MyBatis.
  * Through this interface you can execute commands, get mappers and manage transactions.
  *
  * @author Clinton Begin
+ *
+ * 1.在1.7之前，我们通过try{} finally{} 在finally中释放资源。
+ * 2.对于实现AutoCloseable接口的类的实例，将其放到try后面（我们称之为：try-with-resource），在try结束的时候，会自动将这些资源关闭（调用close方法）。
  */
 public interface SqlSession extends Closeable {
 

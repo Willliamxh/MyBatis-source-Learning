@@ -15,6 +15,8 @@
  */
 package org.apache.ibatis.plugin;
 
+import org.apache.ibatis.reflection.ExceptionUtil;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -22,8 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * @author Clinton Begin
@@ -45,11 +45,13 @@ public class Plugin implements InvocationHandler {
     Class<?> type = target.getClass();
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
+      //jdk动态代理 做功能的增强 。 如果有对应的插件，会在这边返回一个代理对象
       return Proxy.newProxyInstance(
           type.getClassLoader(),
           interfaces,
           new Plugin(target, interceptor, signatureMap));
     }
+    //原封不动返回
     return target;
   }
 

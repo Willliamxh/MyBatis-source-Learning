@@ -10,6 +10,8 @@
     <settings>
         <!--设置mybatis输出日志-->
         <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!--开启二级缓存-->
+        <setting name="cacheEnabled" value="true"/>
     </settings>
 
 
@@ -38,9 +40,9 @@
 <!--    </typeAliases>-->
 
     <!--配置插件-->
-    <plugins>
-        <plugin interceptor="com.github.pagehelper.PageInterceptor" />
-    </plugins>
+<!--    <plugins>-->
+<!--        <plugin interceptor="com.github.pagehelper.PageInterceptor" />-->
+<!--    </plugins>-->
 
     <!--环境配置： 数据库的连接信息
         default:必须和某个environment的id值一样。

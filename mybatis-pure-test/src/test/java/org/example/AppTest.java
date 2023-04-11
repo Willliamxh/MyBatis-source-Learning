@@ -59,8 +59,22 @@ public class AppTest
 
 
         // 第二步：构建sqlSessionFactory（框架初始化） 这里是个建造者模式 == new DefaultSqlSessionFactory() 这个类持有一个Configuration类的引用
+        /**
+         * 1.MyBatis解析配置文件的本质就是为了获得Configuration对象；
+         * 2.Configuration 对象可以理解是mybatis的XML配置文件在程序中的化身，是MyBatis非常重要的一个对象，里面封装了MyBatis的整个配置信息；
+         */
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        // 第三步：打开sqlSession
+
+
+        // 第三步：打开sqlSession  其实这边的核心就是拿到private final Executor executor; 这个执行器对象。
+        // 如果开启了缓存，就是cache执行器，如果有插件，那就是是个代理的cache执行器（proxy），如果都没有应该就是个simple执行器
+        /**
+         * 1、从 configuration 配置对象中获取环境 environment 信息；
+         * 2,根据环境 environment 信息获取事务工厂 TransactionFactory;
+         * 3、根据环境信息中创建一个事务对象 Transaction :
+         * 4、根据 configuration 和 Transaction 创建一个执行器 Executor 对象；
+         * 5、 根据 configuration 和 Executor创建一个默认的SqlSession 对象；
+         */
         SqlSession sqlSession = sqlSessionFactory.openSession();
 
         // 第四步：获取mapper接口对象 底层是动态代理

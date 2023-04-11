@@ -15,15 +15,6 @@
  */
 package org.apache.ibatis.session.defaults;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.exceptions.ExceptionFactory;
@@ -39,6 +30,11 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+
 /**
  * The default implementation for {@link SqlSession}.
  * Note that this class is not Thread-Safe.
@@ -48,10 +44,23 @@ import org.apache.ibatis.session.SqlSession;
 public class DefaultSqlSession implements SqlSession {
 
   private final Configuration configuration;
+  /**
+   * executor是我们需要执行sql中的执行器.
+   */
   private final Executor executor;
 
+  /**
+   * autoCommit是否自动提交 默认为false 需要我们手动提交
+   */
   private final boolean autoCommit;
+  /**
+   * dirty是指内存里面的数据与数据库里面的数据存在不一致的问题，如果一致就是不脏的
+   * dirty是我们Mybatis中的业务参数,是一个boolean类型的,他主要是在执行事务过程中,为false他就回滚,true就提交
+   */
   private boolean dirty;
+  /**
+   * cursorList是我们sql执行完以后用于返回给我们结果的参数
+   */
   private List<Cursor<?>> cursorList;
 
   public DefaultSqlSession(Configuration configuration, Executor executor, boolean autoCommit) {

@@ -591,16 +591,23 @@ public class Configuration {
     executorType = executorType == null ? defaultExecutorType : executorType;
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
     Executor executor;
+
     if (ExecutorType.BATCH == executorType) {
+      //批量执行器
       executor = new BatchExecutor(this, transaction);
     } else if (ExecutorType.REUSE == executorType) {
+      //  可复用的执行器
       executor = new ReuseExecutor(this, transaction);
     } else {
+      //单一语句执行器
       executor = new SimpleExecutor(this, transaction);
     }
+    //如果缓存可用，创建缓存执行器 其实就是用装饰器模式给simpleExecutor来了个功能增强，变成了cache执行器
     if (cacheEnabled) {
-      executor = new CachingExecutor(executor);
+      executor = new CachingExecutor(executor);//这边来个装饰器模式
     }
+    //将执行器加入拦截链  责任链模式 有很多拦截器 很多filter 如果有对应的插件（插件configuration初始化的时候定义好了，configuration.addInterceptor），
+    // 会被拦截，然后返回一个代理对象Proxy
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
