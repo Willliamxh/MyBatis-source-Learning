@@ -27,6 +27,12 @@ public class AppTest
         assertTrue( true );
     }
 
+    @Test
+    public void testClass(){
+        Class<AccountDao> accountDaoClass = AccountDao.class;
+        System.out.println(accountDaoClass);
+    }
+
     public static void main(String[] args) throws IOException {
         ////1.定义mybatis主配置文件的名称, 从类路径的根开始（target/clasess）
         //String config="mybatis.xml";
@@ -79,8 +85,12 @@ public class AppTest
 
         // 第四步：获取mapper接口对象 底层是动态代理
         AccountDao accountDao = sqlSession.getMapper(AccountDao.class);
+
+
         // 第五步：操作数据库
         Account account = accountDao.selectById(2);
+
+
         // 第六步：业务处理
         System.out.println(account);
 
