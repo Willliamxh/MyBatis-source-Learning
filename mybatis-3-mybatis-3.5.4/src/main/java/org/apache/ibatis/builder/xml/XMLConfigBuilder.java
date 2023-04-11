@@ -97,28 +97,44 @@ public class XMLConfigBuilder extends BaseBuilder {
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
+    //是否解析过xml配置文件
     parsed = true;
+    //parser 是个XPath解析器 evalNode 评估 评价 计算 节点的值 得到一个封装后的XNode对象
+    //parser.evalNode 解析xml文件，解析configuration开头的根标签也就是<configuration>标签 得到一个XNode对象，
+    // XNode对象里面有 1.xpathParser对象引用 还有个 2.node对象引用
     parseConfiguration(parser.evalNode("/configuration"));
+    //返回解析后的configuration
     return configuration;
   }
 
   private void parseConfiguration(XNode root) {
     try {
       //issue #117 read properties first
+      //解析<properties resource="db.properties"/>
       propertiesElement(root.evalNode("properties"));
+      //解析<settings> 节点
       Properties settings = settingsAsProperties(root.evalNode("settings"));
       loadCustomVfs(settings);
       loadCustomLogImpl(settings);
+      //解析<typeAliases>节点
       typeAliasesElement(root.evalNode("typeAliases"));
+      //解析 <plugins>节点
       pluginElement(root.evalNode("plugins"));
+      //解析objectFactory 节点
       objectFactoryElement(root.evalNode("objectFactory"));
+      //解析objectWrapperFactory节点
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+      //解析reflectorFactory节点
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
+      //解析environments
       environmentsElement(root.evalNode("environments"));
+      //解析databaseIdProvider
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+      //解析typeHandlers
       typeHandlerElement(root.evalNode("typeHandlers"));
+      //解析 mappers节点，<mappers>节点会告诉MyBatis去哪些位置查找映射配置文件以及使用了注解标识的接口。
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -275,17 +291,25 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void environmentsElement(XNode context) throws Exception {
     if (context != null) {
       if (environment == null) {
+        //<environments default="development"> 读取default的环境信息
         environment = context.getStringAttribute("default");
       }
       for (XNode child : context.getChildren()) {
+        //读子节点的id <environment id="development">
         String id = child.getStringAttribute("id");
+        //查看是否是指定的默认环境（"default"环境 也就是id = default）
         if (isSpecifiedEnvironment(id)) {
+          //创建事务管理工厂 <transactionManager type="JDBC"/>
           TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
+          //创建数据源工厂 <dataSource type="POOLED"
           DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
+          //获取数据源
           DataSource dataSource = dsFactory.getDataSource();
+          //构建环境对象
           Environment.Builder environmentBuilder = new Environment.Builder(id)
               .transactionFactory(txFactory)
               .dataSource(dataSource);
+          //环境对象设置到核心配置configuration对象中
           configuration.setEnvironment(environmentBuilder.build());
         }
       }

@@ -42,7 +42,7 @@ import java.util.Properties;
 public class XPathParser {
 
   /**
-   * XML Document 对象 最终将xml文件映射成一个document
+   * XML Document 对象 将xml文件映射成一个document
    */
   private final Document document;
   /**
@@ -228,14 +228,17 @@ public class XPathParser {
   }
 
   public XNode evalNode(String expression) {
+    //以 expression 表达式 （为根标签，也就是<configuration>），解析document
     return evalNode(document, expression);
   }
 
   public XNode evalNode(Object root, String expression) {
+    //JDK对象代表xml文件一个节点 这里相当于是<configuration>这个父（根）节点，里面会有很多子节点
     Node node = (Node) evaluate(expression, root, XPathConstants.NODE);
     if (node == null) {
       return null;
     }
+    //XNode是mybatis封装的 代表xml节点的一个对象
     return new XNode(this, node, variables);
   }
 

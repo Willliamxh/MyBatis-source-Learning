@@ -15,11 +15,6 @@
  */
 package org.apache.ibatis.builder;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.apache.ibatis.mapping.ParameterMode;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.Configuration;
@@ -28,12 +23,26 @@ import org.apache.ibatis.type.TypeAliasRegistry;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 /**
  * @author Clinton Begin
  */
 public abstract class BaseBuilder {
+  /**
+   * 配置对象 可以debug发现解析xml后会把配置信息放在configuration中
+   */
   protected final Configuration configuration;
+  /**
+   * 类型别名注册对象(其实也是解析别名对象 通过registerAlias方法进行别名注册  通过resolveAlias 进行别名解析)
+   */
   protected final TypeAliasRegistry typeAliasRegistry;
+  /**
+   * 类型转化注册对象（类型处理器简单点说就是用于处理javaType与jdbcType之间类型转换用的处理器，MyBatis针对诸多Java类型与数据库类型进行了匹配处理。）
+   */
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
   public BaseBuilder(Configuration configuration) {

@@ -15,17 +15,14 @@
  */
 package org.apache.ibatis.parsing;
 
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
-
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Clinton Begin
@@ -44,7 +41,9 @@ public class XNode {
     this.node = node;
     this.name = node.getNodeName();
     this.variables = variables;
+    //解析node节点的属性 比如 <configuration url="…………"> 这边就会解析这个url
     this.attributes = parseAttributes(node);
+    //解析node节点的数据 是节点里面的所有信息  <configuration> body </configuration>
     this.body = parseBody(node);
   }
 
