@@ -88,6 +88,7 @@ public class JdkTargetProxy implements InvocationHandler {
         //2.根据这个class类反射创建一个代理对象$Proxy2345
 
         return Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                //这样写是更好的，因为这样如果这个类继承了多个接口，按照上面的方法还得写好多接口
                 target.getClass().getInterfaces(),
                 this);
     }
