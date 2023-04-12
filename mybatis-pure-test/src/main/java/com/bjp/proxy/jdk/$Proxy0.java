@@ -11,7 +11,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 
 /**
- * 这边把代理类的反编译代码给复制出来了 其实是不符合命名规范的
+ * 这边把代理类的反编译代码给复制出来了 其实是不符合很多规范的
  * @see /Users/xuhan/program/program/workLearning/learn-mybatis-source/com/sun/proxy/$Proxy0.class
  */
 public final class $Proxy0 extends Proxy implements JdkTargetInterface {
@@ -33,6 +33,7 @@ public final class $Proxy0 extends Proxy implements JdkTargetInterface {
         return equals(null);
     }
 
+    @Override
     public final boolean equals(Object var1) {
         try {
             return (Boolean)super.h.invoke(this, m1, new Object[]{var1});
@@ -43,6 +44,7 @@ public final class $Proxy0 extends Proxy implements JdkTargetInterface {
         }
     }
 
+    @Override
     public final void sayHello(String var1)   {
         try {
             //这边的h 其实就是我们继承了invocationHandler接口的那个JdkTargetProxy 的invoke()方法
@@ -59,6 +61,7 @@ public final class $Proxy0 extends Proxy implements JdkTargetInterface {
         }
     }
 
+    @Override
     public final String toString()   {
         try {
             return (String)super.h.invoke(this, m2, (Object[])null);
@@ -69,6 +72,7 @@ public final class $Proxy0 extends Proxy implements JdkTargetInterface {
         }
     }
 
+    @Override
     public final int hashCode()   {
         try {
             return (Integer)super.h.invoke(this, m0, (Object[])null);
@@ -78,7 +82,7 @@ public final class $Proxy0 extends Proxy implements JdkTargetInterface {
             throw new UndeclaredThrowableException(var3);
         }
     }
-
+    @Override
     public final void sayThanks(String var1) {
         try {
             super.h.invoke(this, m3, new Object[]{var1});
