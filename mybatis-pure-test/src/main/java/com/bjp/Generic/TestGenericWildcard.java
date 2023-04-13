@@ -67,4 +67,5 @@ public class TestGenericWildcard {
     public <T> void getValue(Generic<T> obj){
 
     }
+
 }

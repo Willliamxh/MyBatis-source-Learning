@@ -67,6 +67,21 @@
       <artifactId>cglib</artifactId>
       <version>3.3.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>22.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>error_prone_annotations</artifactId>
+          <groupId>com.google.errorprone</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>animal-sniffer-annotations</artifactId>
+          <groupId>org.codehaus.mojo</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
 
 
