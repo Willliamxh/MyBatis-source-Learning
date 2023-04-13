@@ -23,7 +23,9 @@ package com.bjp.Generic;
  * https://www.cnblogs.com/wxw7blog/p/7517343.html
  *
  * 大佬文章：
- * https://www.cnblogs.com/zhenyu-go/p/5536667.html
+ * https://www.cnblogs.com/zhenyu-go/p/5536667.html 后面那个讲的不是很清楚
+ *
+ * https://www.zhihu.com/question/20400700/answer/117464182 这个讲的还可
  *
  *
  *
