@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
@@ -16,7 +17,7 @@ import java.util.function.ToLongFunction;
 public class TreeSetTest {
     public static void main(String[] args) {
         //这里的上界 必须得是Person的上届 Comparator<? super E> E是在 TreeSet<E> extends AbstractSet<E> 定义TreeSet的时候定义的
-        // TreeSet<Person> ts1 = new TreeSet<>(new comparatorTest());
+        TreeSet<Person> ts1 = new TreeSet<>(new comparatorTest());
         // ts1.add(new Person("Tom", 20));
         // ts1.add(new Person("Jack", 25));
         // ts1.add(new Person("John", 22));

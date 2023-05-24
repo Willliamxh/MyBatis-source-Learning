@@ -1,5 +1,7 @@
 package com.bjp.Generic;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +84,12 @@ public class BoundedType {
         Integer integer = new Integer(2);
         // list.add(integer); // Error
         list.add(null); // OK
+    }
+
+    static <T> T pick(T a1, T a2) { return a2; }
+
+    public static void main(String[] args) {
+        Serializable d = pick("d", new ArrayList<String>());
     }
 
 
