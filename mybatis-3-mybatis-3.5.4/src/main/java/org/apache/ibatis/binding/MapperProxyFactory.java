@@ -51,7 +51,7 @@ public class MapperProxyFactory<T> {
   }
 
   public T newInstance(SqlSession sqlSession) {
-    //new MapperProxy<> 这个是个动态代理
+    //new MapperProxy<> 这个是个动态代理 能够生成代理对象（真正的代理类在内存中）
     final MapperProxy<T> mapperProxy = new MapperProxy<>(sqlSession, mapperInterface, methodCache);
     return newInstance(mapperProxy);
   }
