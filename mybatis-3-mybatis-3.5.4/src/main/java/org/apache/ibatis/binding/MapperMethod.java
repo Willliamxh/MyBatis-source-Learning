@@ -60,12 +60,15 @@ public class MapperMethod {
    * @param config
    */
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
+    // 对sql语句的封装 select * from ………………
     this.command = new SqlCommand(config, mapperInterface, method);
+    // 方法签名 returnType：class com.bjp.domain.Account
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    //获取节点类型
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -83,6 +86,7 @@ public class MapperMethod {
         break;
       }
       case SELECT:
+        //通过方法签名获得返回值
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
@@ -93,7 +97,9 @@ public class MapperMethod {
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {
+          // 参数转换 转成sqlCommand参数  param:2
           Object param = method.convertArgsToSqlCommandParam(args);
+          //执行查询 查询单条数据
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
               && (result == null || !method.getReturnType().equals(result.getClass()))) {
@@ -293,6 +299,9 @@ public class MapperMethod {
     }
   }
 
+  /**
+   * 静态内部类 方法签名
+   */
   public static class MethodSignature {
 
     private final boolean returnsMany;
@@ -306,6 +315,12 @@ public class MapperMethod {
     private final Integer rowBoundsIndex;
     private final ParamNameResolver paramNameResolver;
 
+    /**
+     *  构造方法签名
+     * @param configuration
+     * @param mapperInterface
+     * @param method
+     */
     public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
       Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
       if (resolvedReturnType instanceof Class<?>) {
