@@ -46,7 +46,7 @@ public class MapperProxyFactory<T> {
 
   @SuppressWarnings("unchecked")
   protected T newInstance(MapperProxy<T> mapperProxy) {
-    //我传什么接口，就生成对应接口的代理对象
+    //我传什么接口，就生成对应接口的代理对象 然后我们这里的handler是mapperProxy
     return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);
   }
 

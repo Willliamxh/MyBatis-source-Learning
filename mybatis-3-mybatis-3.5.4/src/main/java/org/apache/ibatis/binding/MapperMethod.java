@@ -15,15 +15,6 @@
  */
 package org.apache.ibatis.binding;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.cursor.Cursor;
@@ -38,17 +29,36 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
  * @author Kazuki Shimizu
+ * 其实就是用这个类 封装了 我们的selectById 方法
  */
 public class MapperMethod {
 
+  //sql 命令
   private final SqlCommand command;
+
+  // 方法签名
   private final MethodSignature method;
 
+  /**
+   * 根据mapper接口类型，接口方法，核心配置对象 构造mapperMethod对象
+   * @param mapperInterface
+   * @param method
+   * @param config
+   */
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
     this.command = new SqlCommand(config, mapperInterface, method);
     this.method = new MethodSignature(config, mapperInterface, method);
@@ -216,14 +226,22 @@ public class MapperMethod {
 
   }
 
+  /**
+   * 静态内部类
+   *
+   */
   public static class SqlCommand {
-
+    // namespace.selectId  name = ms.getId(); = com.bjp.dao.AccountDao.selectById
     private final String name;
+    // sql类型 增删改查 type = ms.getSqlCommandType(); = SELECT
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
+      // 方法名 selectById
       final String methodName = method.getName();
+      // 方法所在类 包名+接口名  public abstract com.bjp.domain.Account com.bjp.dao.AccountDao.selectById(java.lang.Integer)
       final Class<?> declaringClass = method.getDeclaringClass();
+      // 解析一个mapper语句对象  到时候我们的sql语句（就是accountDao.xml里面的那个select id = "XXX"的这些东西）会用MappedStatement这个对象来表示
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
       if (ms == null) {
@@ -253,8 +271,11 @@ public class MapperMethod {
 
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
+      //接口包名+ 接口名 + 接口方法名 = sql 语句的id   com.bjp.dao.AccountDao.selectById
       String statementId = mapperInterface.getName() + "." + methodName;
+      // 看一下配置类里面有没有
       if (configuration.hasStatement(statementId)) {
+        // 如果有 直接get
         return configuration.getMappedStatement(statementId);
       } else if (mapperInterface.equals(declaringClass)) {
         return null;

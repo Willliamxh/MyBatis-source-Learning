@@ -13,4 +13,19 @@ public interface AccountDao {
      * @return
      */
     public Account selectById(Integer id);
+
+    /**
+     * 这是个默认方法 jdk1.8 开始有
+     * @return 默认方法需要有实现
+     */
+    default Account getDefaultMethod(){
+        return new Account();
+    }
+
+    /**
+     * 这个就是object的默认方法
+     * @return
+     */
+    @Override
+    public String toString();
 }

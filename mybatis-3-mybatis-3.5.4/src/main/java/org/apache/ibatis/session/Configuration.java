@@ -133,7 +133,7 @@ public class Configuration {
   //类型别名注册对象
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
-
+  // --------------- mapper.xml 文件相关信息 ------------------
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
           ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
@@ -694,6 +694,9 @@ public class Configuration {
     return parameterMaps.containsKey(id);
   }
 
+  /**
+   * 把解析出来的SQL等信息放入MappedStatement的map中
+   */
   public void addMappedStatement(MappedStatement ms) {
     mappedStatements.put(ms.getId(), ms);
   }

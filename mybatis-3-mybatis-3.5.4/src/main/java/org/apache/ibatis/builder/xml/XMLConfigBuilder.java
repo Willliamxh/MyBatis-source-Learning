@@ -134,7 +134,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       //解析typeHandlers
       typeHandlerElement(root.evalNode("typeHandlers"));
-      //解析 mappers节点，<mappers>节点会告诉MyBatis去哪些位置查找映射配置文件以及使用了注解标识的接口。
+      //解析 mappers节点，<mappers>节点会告诉MyBatis去哪些位置查找映射配置文件以及使用了注解标识的接口。 相当于读mybatis.xml的<mapper>,然后再去读包下的AccountDao.xml
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -395,9 +395,13 @@ public class XMLConfigBuilder extends BaseBuilder {
           String url = child.getStringAttribute("url");
           String mapperClass = child.getStringAttribute("class");
           if (resource != null && url == null && mapperClass == null) {
+            // 设置线程错误信息上下文
             ErrorContext.instance().resource(resource);
+            // 读取mapper.xml的输入流对象
             InputStream inputStream = Resources.getResourceAsStream(resource);
+            // 创建mapper.xml的构造器
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
+            // 解析mapper.xml
             mapperParser.parse();
           } else if (resource == null && url != null && mapperClass == null) {
             ErrorContext.instance().resource(url);

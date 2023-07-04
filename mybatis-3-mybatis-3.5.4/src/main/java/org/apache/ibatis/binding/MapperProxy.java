@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
+ * mapper接口的调用处理对象(mapper的伪代理类(handler 用于增强)（真正的代理类在内存中）)，要实现jdk的InvocationHandler
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -42,6 +43,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static final Method privateLookupInMethod;
   private final SqlSession sqlSession;
   private final Class<T> mapperInterface;
+  // Method对象map，键是Method，值是mapperMathod
   private final Map<Method, MapperMethodInvoker> methodCache;
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
@@ -76,9 +78,31 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     lookupConstructor = lookup;
   }
 
+  /**
+   * InvocationHandler 的invoke方法，在目标发发执行时会被调用，该方法起到拦截目标方法的作用。在这里其实增强了mapperInterface
+   *
+   * @param proxy the proxy instance that the method was invoked on
+   *
+   * @param method the {@code Method} instance corresponding to
+   * the interface method invoked on the proxy instance.  The declaring
+   * class of the {@code Method} object will be the interface that
+   * the method was declared in, which may be a superinterface of the
+   * proxy interface that the proxy class inherits the method through.
+   *
+   * @param args an array of objects containing the values of the
+   * arguments passed in the method invocation on the proxy instance,
+   * or {@code null} if interface method takes no arguments.
+   * Arguments of primitive types are wrapped in instances of the
+   * appropriate primitive wrapper class, such as
+   * {@code java.lang.Integer} or {@code java.lang.Boolean}.
+   *
+   * @return
+   * @throws Throwable
+   */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      // 得到方法所在的类如果是Object类（也就是Object的方法，hash，equals这种），直接调用，不做拦截处理（由于我们是个反射对象，不是Object类，所以不走这边）
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else {
@@ -91,6 +115,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   private MapperMethodInvoker cachedInvoker(Method method) throws Throwable {
     try {
+      // 如果 key 对应的 value 不存在，则使用获取 remappingFunction 重新计算后的值，并保存为该 key 的 value，否则返回 value。
       return methodCache.computeIfAbsent(method, m -> {
         if (m.isDefault()) {
           try {
@@ -104,6 +129,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             throw new RuntimeException(e);
           }
         } else {
+          // 如果是非default方法 且这个方法不存在 在这边new MapperMethod方法
           return new PlainMethodInvoker(new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
         }
       });
