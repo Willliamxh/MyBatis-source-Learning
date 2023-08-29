@@ -28,6 +28,7 @@ public class IntegerTypeHandler extends BaseTypeHandler<Integer> {
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, Integer parameter, JdbcType jdbcType)
       throws SQLException {
+    // 这个就是JDBCTest中的 pstmt.setInt(1,1); 给第i个参数设置为parameter
     ps.setInt(i, parameter);
   }
 

@@ -87,6 +87,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public void parameterize(Statement statement) throws SQLException {
+    //使用参数操作对象（parameterHandler）设置值
     parameterHandler.setParameters((PreparedStatement) statement);
   }
 

@@ -29,18 +29,19 @@ public class JDBCTest {
         //获取数据库连接,使用java.sql里面的DriverManager的getConnectin(String url , String username ,String password )来完成
 
         //定义查询语句
-        String sql="select * from account where id = 1";
+        String sql="select * from account where id = ?";
 
         //构造一个statement对象来执行sql语句：主要有Statement，PreparedStatement，CallableStatement三种实例来实现
         // 1.执行静态语句，通畅通过statement实例实现
-        Statement stmt=con.createStatement();
+        // Statement stmt=con.createStatement();
         // 2.执行动态语句，通常通过prepareStatement实现
-        // PreparedStatement pstmt = conn.prepareStatement(sql) ;
+        PreparedStatement pstmt = con.prepareStatement(sql) ;
         // 3.执行数据库存储过程，通常通过callableStatement实现
         //CallableStatement cstmt =  conn.prepareCall("{CALL demoSp(? , ?)}") ;
-
+        // 如果是使用预编译的 需要设置参数
+        pstmt.setInt(1,1);
         //执行查询
-        ResultSet rs=stmt.executeQuery(sql);//执行sql并返还结束 ；ResultSet executeQuery(String sqlString)：用于返还一个结果集（ResultSet）对象。
+        ResultSet rs=pstmt.executeQuery(sql);//执行sql并返还结束 ；ResultSet executeQuery(String sqlString)：用于返还一个结果集（ResultSet）对象。
 
         //遍历结果集
         while(rs.next()){
