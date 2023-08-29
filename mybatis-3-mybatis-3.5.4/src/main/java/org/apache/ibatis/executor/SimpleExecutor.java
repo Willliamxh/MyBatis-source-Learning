@@ -55,6 +55,7 @@ public class SimpleExecutor extends BaseExecutor {
 
   /**
    * 从这边开始就是jdbc的封装了
+   * jdbc底层封装 预编译SQL会进行连接 创建预编译 设置参数
    */
   @Override
   public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
@@ -63,7 +64,7 @@ public class SimpleExecutor extends BaseExecutor {
       Configuration configuration = ms.getConfiguration();
       // 创建一个预编译的StatementHandler解析SQL语句
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
-      // 预编译SQL
+      // 预编译SQL   一个StatementHandler  一个日志 settings
       stmt = prepareStatement(handler, ms.getStatementLog());
       // 执行查询
       return handler.query(stmt, resultHandler);

@@ -133,7 +133,7 @@ public class Configuration {
   //类型别名注册对象
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
-  // --------------- mapper.xml 文件相关信息 ------------------
+  // --------------- mapper.xml 文件相关信息（mapper.xml里面语句的封装）MappedStatement相当于是个语句对象 记录了语句的各个信息 ------------------
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
           ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
@@ -577,9 +577,19 @@ public class Configuration {
     return resultSetHandler;
   }
 
+  /**
+   *
+   * @param executor   执行器
+   * @param mappedStatement  sql封装的类
+   * @param parameterObject 参数
+   * @param rowBounds  默认情况查多少数据 0-2147483647
+   * @param resultHandler  结果
+   * @param boundSql sql语句
+   * @return
+   */
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
-    //责任链模式
+    //责任链模式 按顺序执行 filtle典型的责任链设计模式 xml中的<plugin插件>
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
   }
