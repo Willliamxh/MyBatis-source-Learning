@@ -15,15 +15,15 @@
  */
 package org.apache.ibatis.logging.jdbc;
 
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.reflection.ExceptionUtil;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * PreparedStatement proxy to add logging.
@@ -41,7 +41,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
     this.statement = stmt;
   }
 
-  @Override
+  @Override//PreparedStatementLogger的invoke 记录一些日志
   public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
     try {
       if (Object.class.equals(method.getDeclaringClass())) {
@@ -55,7 +55,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
         if ("executeQuery".equals(method.getName())) {
           ResultSet rs = (ResultSet) method.invoke(statement, params);
           return rs == null ? null : ResultSetLogger.newInstance(rs, statementLog, queryStack);
-        } else {
+        } else {//真正实在这边进行调用 jdbc的excute
           return method.invoke(statement, params);
         }
       } else if (SET_METHODS.contains(method.getName())) {

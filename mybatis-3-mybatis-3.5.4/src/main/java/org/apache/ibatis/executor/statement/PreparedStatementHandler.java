@@ -56,8 +56,11 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
+    //JDBC预编译的PreparedStatement对象
     PreparedStatement ps = (PreparedStatement) statement;
+    //这是个代理对象 在执行pstmt.executeQuery() 之前，会被代理类拦截  这个就可以直接类比ResultSet rs=pstmt.executeQuery(sql);
     ps.execute();
+    //对结果进行处理
     return resultSetHandler.handleResultSets(ps);
   }
 
@@ -79,7 +82,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
         return connection.prepareStatement(sql, keyColumnNames);
       }
     } else if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
-      return connection.prepareStatement(sql);//这句话就是纯纯的jdbc语句
+      return connection.prepareStatement(sql);//这句话就是纯纯的jdbc语句 但是 这个connection是我们的被代理类这边最后会返回一个被代理的statement
     } else {
       return connection.prepareStatement(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
     }
