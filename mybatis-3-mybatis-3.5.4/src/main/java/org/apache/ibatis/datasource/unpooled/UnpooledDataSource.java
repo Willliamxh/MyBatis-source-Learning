@@ -15,22 +15,17 @@
  */
 package org.apache.ibatis.datasource.unpooled;
 
+import org.apache.ibatis.io.Resources;
+
+import javax.sql.DataSource;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import javax.sql.DataSource;
-
-import org.apache.ibatis.io.Resources;
 
 /**
  * @author Clinton Begin
@@ -90,7 +85,7 @@ public class UnpooledDataSource implements DataSource {
     this.driverProperties = driverProperties;
   }
 
-  @Override
+  @Override//UnpooledDataSource类dataSource.getConnection() 真正获取连接
   public Connection getConnection() throws SQLException {
     return doGetConnection(username, password);
   }
@@ -203,7 +198,7 @@ public class UnpooledDataSource implements DataSource {
   }
 
   private Connection doGetConnection(String username, String password) throws SQLException {
-    Properties props = new Properties();
+    Properties props = new Properties();//将用户名密码放入Properties
     if (driverProperties != null) {
       props.putAll(driverProperties);
     }
@@ -217,9 +212,10 @@ public class UnpooledDataSource implements DataSource {
   }
 
   private Connection doGetConnection(Properties properties) throws SQLException {
-    initializeDriver();
+    initializeDriver();//初始化驱动 类似jdbcTest里的 Class.forName("com.mysql.jdbc.Driver");
+    //类似jdbcTest里的  DriverManager.getConnection(url,username,password);
     Connection connection = DriverManager.getConnection(url, properties);
-    configureConnection(connection);
+    configureConnection(connection);//配置中会查看是否是自动提交、默认事务隔离级别、默认网络超时
     return connection;
   }
 

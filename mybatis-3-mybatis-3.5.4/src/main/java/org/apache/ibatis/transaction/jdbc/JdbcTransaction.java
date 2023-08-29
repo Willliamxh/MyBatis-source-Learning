@@ -15,15 +15,15 @@
  */
 package org.apache.ibatis.transaction.jdbc;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import javax.sql.DataSource;
-
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionException;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * {@link Transaction} that makes use of the JDBC commit and rollback facilities directly.
@@ -57,7 +57,7 @@ public class JdbcTransaction implements Transaction {
   @Override
   public Connection getConnection() throws SQLException {
     if (connection == null) {
-      openConnection();
+      openConnection();//事务打开一个连接调用openConnection();   事务是在解析xml的环境时放入的
     }
     return connection;
   }
@@ -135,9 +135,9 @@ public class JdbcTransaction implements Transaction {
     if (log.isDebugEnabled()) {
       log.debug("Opening JDBC Connection");
     }
-    connection = dataSource.getConnection();
+    connection = dataSource.getConnection();//获取连接
     if (level != null) {
-      connection.setTransactionIsolation(level.getLevel());
+      connection.setTransactionIsolation(level.getLevel());//是否是自动提交
     }
     setDesiredAutoCommit(autoCommit);
   }

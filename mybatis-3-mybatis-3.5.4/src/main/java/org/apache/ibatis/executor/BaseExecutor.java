@@ -343,11 +343,11 @@ public abstract class BaseExecutor implements Executor {
     }
     return list;
   }
-
+  //创建链接   connection是一个代理对象
   protected Connection getConnection(Log statementLog) throws SQLException {
-    Connection connection = transaction.getConnection();
-    if (statementLog.isDebugEnabled()) {
-      return ConnectionLogger.newInstance(connection, statementLog, queryStack);
+    Connection connection = transaction.getConnection();//在第3步创建的事务对象  openSessionFromDataSource
+    if (statementLog.isDebugEnabled()) {//日志
+      return ConnectionLogger.newInstance(connection, statementLog, queryStack);//日志代理也是一个到动态代理， 一个代理对象可以被多次代理
     } else {
       return connection;
     }

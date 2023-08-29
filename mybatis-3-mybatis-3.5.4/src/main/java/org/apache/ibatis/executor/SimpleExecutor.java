@@ -90,8 +90,11 @@ public class SimpleExecutor extends BaseExecutor {
 
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
+    //创建链接 获取一个被两层代理的connection对象
     Connection connection = getConnection(statementLog);
+    //预编译 return connection.prepareStatement(sql);
     stmt = handler.prepare(connection, transaction.getTimeout());
+    //设置参数
     handler.parameterize(stmt);
     return stmt;
   }

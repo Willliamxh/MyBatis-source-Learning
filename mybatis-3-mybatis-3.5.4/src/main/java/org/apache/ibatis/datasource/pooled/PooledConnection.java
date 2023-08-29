@@ -15,13 +15,13 @@
  */
 package org.apache.ibatis.datasource.pooled;
 
+import org.apache.ibatis.reflection.ExceptionUtil;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * @author Clinton Begin
@@ -46,6 +46,9 @@ class PooledConnection implements InvocationHandler {
    *
    * @param connection - the connection that is to be presented as a pooled connection
    * @param dataSource - the dataSource that the connection is from
+   *
+   * new PooledConnection对dataSource.getConnection()进行包装、成员变量初始化，
+   *  dataSource：当前 PooledDataSource类
    */
   public PooledConnection(Connection connection, PooledDataSource dataSource) {
     this.hashCode = connection.hashCode();
@@ -228,11 +231,13 @@ class PooledConnection implements InvocationHandler {
    * @param method - the method to be executed
    * @param args   - the parameters to be passed to the method
    * @see java.lang.reflect.InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])
+   * //PooledConnection类的代理方法
    */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     String methodName = method.getName();
-    if (CLOSE.equals(methodName)) {
+    if (CLOSE.equals(methodName)) {//方法名是close的话 调用close方法会将连接放入连接池
+      // 把链接归还到连接池中
       dataSource.pushConnection(this);
       return null;
     }

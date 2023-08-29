@@ -15,6 +15,11 @@
  */
 package org.apache.ibatis.datasource.pooled;
 
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
+
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -24,12 +29,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import javax.sql.DataSource;
-
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 
 /**
  * This is a simple, synchronous, thread-safe database connection pool.
@@ -86,6 +85,8 @@ public class PooledDataSource implements DataSource {
 
   @Override
   public Connection getConnection() throws SQLException {
+    // PooledDataSource的getConnection()（mybatis的连接池 实现了InvocationHandler）
+    // 数据库的账号密码    getProxyConnection();返回一个代理类
     return popConnection(dataSource.getUsername(), dataSource.getPassword()).getProxyConnection();
   }
 
@@ -400,7 +401,7 @@ public class PooledDataSource implements DataSource {
       }
     }
   }
-
+  //PooledDataSource类的popConnection()  PooledConnection implements InvocationHandler 说明返回的是一个代理对象
   private PooledConnection popConnection(String username, String password) throws SQLException {
     boolean countedWait = false;
     PooledConnection conn = null;
@@ -418,7 +419,7 @@ public class PooledDataSource implements DataSource {
         } else {
           // Pool does not have available connection
           if (state.activeConnections.size() < poolMaximumActiveConnections) {
-            // Can create new connection
+            // Can create new connection （核心部分）dataSource.getConnection()是真正的链接。PooledConnection对其进行了包装
             conn = new PooledConnection(dataSource.getConnection(), this);
             if (log.isDebugEnabled()) {
               log.debug("Created connection " + conn.getRealHashCode() + ".");
