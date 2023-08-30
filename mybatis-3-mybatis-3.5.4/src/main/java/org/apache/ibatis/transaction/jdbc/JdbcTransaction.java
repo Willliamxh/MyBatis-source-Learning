@@ -89,7 +89,7 @@ public class JdbcTransaction implements Transaction {
       if (log.isDebugEnabled()) {
         log.debug("Closing JDBC Connection [" + connection + "]");
       }
-      connection.close();
+      connection.close();//这边会被动态代理对象拦截，将链接归还给连接池
     }
   }
 
