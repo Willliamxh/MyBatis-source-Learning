@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 
 /**
  * @author Clinton Begin
+ * //最终调用Invocation的proceed
+ * //具体就是Invocation 的 invoke()方法，当然，只会拦截那些你指定需要拦截的方法。
  */
 public class Invocation {
 
@@ -41,6 +43,10 @@ public class Invocation {
     return method;
   }
 
+  /**
+   * 获取到目标类要执行的方法的参数
+   * @return
+   */
   public Object[] getArgs() {
     return args;
   }

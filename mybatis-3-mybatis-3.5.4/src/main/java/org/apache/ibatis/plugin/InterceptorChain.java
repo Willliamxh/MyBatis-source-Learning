@@ -20,13 +20,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 责任链模式 类
  * @author Clinton Begin
  */
 public class InterceptorChain {
 
   private final List<Interceptor> interceptors = new ArrayList<>();
-
+  //拦截上述4个类，
   public Object pluginAll(Object target) {
+    //    xml配置文件中的
+    //      <plugins>
+    //        <plugin interceptor="com.bjpowernode.plugin.xxxx"></plugin>
+    //    </plugins>
     for (Interceptor interceptor : interceptors) {
       //用插件的拦截器处理一下，然后再返回。Interceptor有三个方法，插件会去实现这三个方法。比如PageInterceptor
       target = interceptor.plugin(target);

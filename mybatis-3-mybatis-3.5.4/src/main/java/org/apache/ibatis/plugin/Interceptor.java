@@ -24,6 +24,7 @@ public interface Interceptor {
 
   Object intercept(Invocation invocation) throws Throwable;
 
+  // 假设对ParameterHandler做拦截
   default Object plugin(Object target) {
     return Plugin.wrap(target, this);
   }
